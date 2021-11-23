@@ -7,26 +7,50 @@ interface Params {
 const script: Firebot.CustomScript<Params> = {
   getScriptManifest: () => {
     return {
-      name: "Starter Custom Script",
-      description: "A starter custom script for build",
-      author: "SomeDev",
+      name: "$tempConvert Variable",
+      description: "Adds a $tempConvert variable",
+      author: "theperry",
       version: "1.0",
       firebotVersion: "5",
+      startupOnly: true,
     };
   },
-  getDefaultParameters: () => {
-    return {
-      message: {
-        type: "string",
-        default: "Hello World!",
-        description: "Message",
-        secondaryDescription: "Enter a message here",
-      },
-    };
-  },
+  getDefaultParameters: null,
   run: (runRequest) => {
-    const { logger } = runRequest.modules;
-    logger.info(runRequest.parameters.message);
+    const { replaceVariableManager } = runRequest.modules;
+
+    replaceVariableManager.registerReplaceVariable({
+      definition: {
+        handle: "tempConverter",
+        description: "Converts the given temperatur to the assigned scale.",
+        usage: "tempConvert[num, scale]",
+        examples: [
+          {
+            usage: "tempConverter[25, F]",
+            description: "Converts 25°C to Fahrenheit"
+          }
+        ],
+        possibleDataOutput: ["text"],
+      },
+      evaluator: (_, temp, scale = "F") => {
+
+        if (isNaN(temp)) {
+          return 0;
+        }
+
+        if (scale === "C"){
+          temp = (temp*1.8)+32;
+          temp = Number(temp).toFixed(2);
+          temp = temp + "°F";
+        } else if (scale === "F"){
+          temp = (temp-32)/1.8;
+          temp = Number(temp).toFixed(2);
+          temp = temp + "°C"
+        }
+        
+        return temp;
+      },
+    });
   },
 };
 
