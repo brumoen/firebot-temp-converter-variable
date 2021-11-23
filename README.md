@@ -2,7 +2,7 @@
 
 #### Example:
 
-Create a command !temp which a Chat Effect that contains:
+Create a command !temp with a Chat Effect that contains:
 `$arg[1]°$arg[2] converts to $tempConverter[$arg[1], $arg[2]]`
 
 Then if you post a message like this `!temp 25 C` in chat, the bot will then reply with `25°C converts to 77.00°F` in chat.
